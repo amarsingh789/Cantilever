@@ -3,6 +3,7 @@ const { model } = require('mongoose');
 const router = express.Router();
 const { body } = require('express-validator')
 const userControllers = require('../controllers/user')
+const authMiddleware = require('../middlewares/auth.middlewares')
 
 
 router.post('/register', [
@@ -17,5 +18,7 @@ router.post('/login', [
 ],
     userControllers.loginUser
 )
+
+router.get('/profile', authMiddleware.authUser, userControllers.getUserProfile)
 
 module.exports = router
