@@ -96,4 +96,94 @@ Content-Type: application/json
 - `email` (string) — required, must be a valid email.
 - `password` (string) — required, min length 6.
 
+---
+
+**Login Endpoint**
+
+**Endpoint:** `POST /users/login`
+
+**Description:**
+Authenticates an existing user. Validates credentials, compares the provided password with the stored hashed password, and returns a JWT token and the user object (password excluded) when successful.
+
+**Headers:**
+- `Content-Type: application/json`
+
+**Request Body:**
+```json
+{
+  "email": "user@example.com",
+  "password": "string"
+}
+```
+
+**Validation Rules:**
+- `email`: required, must be a valid email address.
+- `password`: required, minimum 6 characters.
+
+**Successful Response (200 OK):**
+- Description: Credentials are valid, returns JWT token and user object (without password).
+- Body example:
+```json
+{
+  "token": "<jwt-token>",
+  "user": {
+    "_id": "<userId>",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john@example.com"
+  }
+}
+```
+
+**Example — Raw HTTP Response (200 OK):**
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJf...",
+  "user": {
+    "_id": "64a1f2e5b7c8d9e0f1234567",
+    "fullname": { "firstname": "John", "lastname": "Doe" },
+    "email": "john@example.com"
+  }
+}
+```
+
+**Validation Error (400 Bad Request):**
+- Returned when required fields are missing or fail validation.
+- Body example:
+```json
+{
+  "errors": [
+    { "msg": "Invalid Email", "param": "email", "location": "body" },
+    { "msg": "Password must be at least 6 characters long", "param": "password", "location": "body" }
+  ]
+}
+```
+
+**Unauthorized (401 Unauthorized):**
+- Returned when the email is not found or the password does not match.
+- Body example:
+```json
+{ "message": "Invalid email or password" }
+```
+
+**Server Error (500 Internal Server Error):**
+- Returned for unexpected failures.
+- Body example:
+```json
+{ "error": "Internal Server Error" }
+```
+
+**Notes / Implementation details:**
+- The server looks up the user and selects the stored hashed password using `.select('+password')` before calling `comparePassword`.
+- On success, a JWT is generated using the server `JWT_SECRET` and returned to the client.
+
+**How the data is required (summary):**
+- `email` (string) — required, must be a valid email.
+- `password` (string) — required, min length 6.
+
 Place this file at: Backend/README.md
