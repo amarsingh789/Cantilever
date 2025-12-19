@@ -10,7 +10,7 @@ const mongoose = require('mongoose');
 const Listing = require("./models/listing.js");
 const { title } = require('process');
 const http = require('http')
-
+const userRoutes = require('./routes/user.js')
 
 main()
 .then(() =>{
@@ -35,6 +35,7 @@ app.get('/listing', async(req, res) => {
     const listingvar = await Listing.find({});
 })
 
+app.use('/users',userRoutes)
 
 app.listen(port, ()=>{
     console.log(`Server are listing on this port ${port}`);
