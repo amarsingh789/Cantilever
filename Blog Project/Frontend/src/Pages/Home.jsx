@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 
 const Home = () => {
+
+  const isLoggedIn = !!localStorage.getItem('token');
+
   return (
     <div className="relative min-h-screen bg-cover bg-center bg-no-repeat bg-[url(https://images.unsplash.com/photo-1765873360351-9b8e1ac646de?q=80&w=1175&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)]">
       <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/70 ">
@@ -19,8 +22,16 @@ const Home = () => {
             </div>
             
             <div className="nav-box-03 flex items-center gap-8 ">
-              <Link to="/login" className="hidden md:block px-4 py-2 rounded-md text-[18px] transition hover:bg-white hover:text-black duration-300 font-medium text-white">Log In</Link>
-              <Link to='/signup' className="px-4 py-2 bg-white text-black rounded-md text-[18px] font-semibold hover:opacity-90 transition">Sign Up</Link>
+              {!isLoggedIn ? (
+                <>
+                <Link to="/login" className="hidden md:block px-4 py-2 rounded-md text-[18px] transition hover:bg-white hover:text-black duration-300 font-medium text-white">Log In</Link>
+                <Link to='/signup' className="px-4 py-2 bg-white text-black rounded-md text-[18px] font-semibold hover:opacity-90 transition">Sign Up</Link>
+                </>
+              ) : (
+                <Link to='/user/logout' className="px-4 py-2 bg-white text-black rounded-md text-[18px] font-semibold hover:opacity-90 transition">Logout</Link>
+              )
+
+              }
             </div>
           </div>
           {/* hero section */}
