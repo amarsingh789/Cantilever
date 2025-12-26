@@ -12,6 +12,7 @@ const { title } = require('process');
 const http = require('http')
 const userRoutes = require('./routes/user.js')
 const cookieParser = require('cookie-parser')
+const postRoutes = require('./routes/post.router.js')
 
 main()
 .then(() =>{
@@ -28,6 +29,11 @@ app.use(cors());
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
 app.use(cookieParser())
+
+app.use('/uploads', express.static('uploads'));
+
+app.use('/users', userRoutes);
+app.use('/posts', postRoutes);
 
 app.get('/', (req, res) =>{
     res.send("Server are working")

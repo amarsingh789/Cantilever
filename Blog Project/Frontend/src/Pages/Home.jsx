@@ -5,7 +5,8 @@ const Home = () => {
   const isLoggedIn = !!localStorage.getItem('token');
 
   return (
-    <div className="relative min-h-screen bg-cover bg-center bg-no-repeat bg-[url(https://images.unsplash.com/photo-1765873360351-9b8e1ac646de?q=80&w=1175&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)]">
+    <>
+      <div className="relative min-h-screen bg-cover bg-center bg-no-repeat bg-[url(https://images.unsplash.com/photo-1765873360351-9b8e1ac646de?q=80&w=1175&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)]">
       <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/70 ">
         {/* Content layer */}
         <div className="relative z-10 flex min-h-screen flex-col">
@@ -44,6 +45,17 @@ const Home = () => {
         </div>
       </div>
     </div>
+
+    {/* Blog Section */}
+    <section className="bg-white px-6 py-16 md:px-12 lg:px-20">
+      {/* heading Section */}
+      <div className="mb-10">
+        <h1 className="text-3xl font-bold mb-2">Blog</h1>
+        <p className="text-gray-600 max-w-xl">Here, we share travel tips, destination guides, and stories that inspire your next adventure.</p>
+      </div>
+      
+    </section>
+    </>
   );
 };
 
