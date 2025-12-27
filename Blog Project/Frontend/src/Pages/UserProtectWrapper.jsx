@@ -15,7 +15,9 @@ const UserProtectWrapper = ({
     
     useEffect(()=>{
         if(!token){
+            console.log("No token found, redirecting to login");
         navigate('/login')
+        return;
         }
 
         axios.get('/users/profile', {
@@ -23,8 +25,11 @@ const UserProtectWrapper = ({
                 Authorization: `Bearer ${token}`
             }
         }).then((response)=>{
+            console.log("Full Profile Response:", response.data);
             if(response.status === 200){
-                setUser(response.data.user)
+                const userData = response.data.user || response.data;
+                console.log("Setting User Context to:", userData);
+                setUser(userData)
                 setIsLoading(false)
             }
         })    
@@ -34,7 +39,7 @@ const UserProtectWrapper = ({
             navigate('/login')
         })                                            
 
-    }, [token])
+    }, [token, navigate, setUser])
     if(isLoading){
         return(
             <div>

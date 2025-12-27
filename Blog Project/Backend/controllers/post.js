@@ -47,3 +47,50 @@ module.exports.getPostById = async(req, res, next) => {
         res.status(500).json({message: err.message})
     }
 }
+// UPDATE POST CONTROLLER
+module.exports.updatePost = async(req, res, next) => {
+    try{
+        const postId = req.params.id;
+        const { title, content, category} = req.body;
+
+        const  post = await postModel.findById(postId);
+        if(!post){
+            return res.status(404).json({message: 'Post not found'})
+        }
+        if(post.author.toString() !== req.user._id.toString()){
+            return res.status(403).json({message: 'Unauthorized action'})
+        }
+
+        let updateData = {
+            title,
+            content,
+            category
+        };
+        if(req.file){
+            updateData.coverImage = `http://localhost:4000/uploads/${req.file.filename}`;
+        }
+        const updatedPost = await postModel.findByIdAndUpdate(postId, updateData, {new: true});
+        res.status(200).json({message: 'Post updated successfully', post: updatedPost})
+    }catch(err){
+        res.status(500).json({message: err.message})
+    }
+}
+
+// Delete Post Controller
+module.exports.deletePost = async(req, res, next) => {
+    try{
+        const postId = req.params.id;
+
+        const post = await postModel.findById(postId);
+        if(!post){
+            return res.status(404).json({message: 'Post not found'})
+        }
+        if(post.author.toString() !== req.user._id.toString()){
+            return res.status(403).json({message: "Unauthorized action"})
+        }
+        await postModel.findByIdAndDelete(postId);
+        res.status(200).json({message: 'Post deleted successfully'})
+    }catch(err){
+        res.status(500).json({message: err.message})
+    }
+}

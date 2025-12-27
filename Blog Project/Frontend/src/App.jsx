@@ -8,6 +8,7 @@ import UserProtectWrapper from './Pages/UserProtectWrapper'
 import { UserLogout } from './Pages/UserLogout'
 import CreatePost from './Pages/CreatePost'
 import PageView from './Pages/PageView'
+import EditPage from './Pages/EditPost'
 
 const App = () => {
 
@@ -40,6 +41,11 @@ const App = () => {
               <PageView/>
             </UserProtectWrapper>
             } />
+          <Route path='/edit/:id' element={
+            <UserProtectWrapper>
+              <EditPage/>
+            </UserProtectWrapper>
+          }/>  
       </Routes>
     </div>
   )

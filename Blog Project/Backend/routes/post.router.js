@@ -20,5 +20,7 @@ const upload = multer({storage: storage});
 
 router.post('/create', authMiddleware.authUser, upload.single('coverImage'), postControllers.createPost);
 router.get('/all', postControllers.getAllPosts);
-router.get('/get/:id', postControllers.getPostById)
+router.get('/get/:id', postControllers.getPostById);
+router.put('/update/:id', authMiddleware.authUser, upload.single('coverImage'), postControllers.updatePost);
+router.delete('/delete/:id', authMiddleware.authUser, postControllers.deletePost)
 module.exports = router;

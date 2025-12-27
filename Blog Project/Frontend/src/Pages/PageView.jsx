@@ -1,14 +1,18 @@
 import axios from 'axios'
-import React from 'react'
+import React, { useContext } from 'react'
 import { useEffect } from 'react'
 import { useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { UserDataContext } from '../context/UserContext'
 
 
 const PageView = () => {
     const {id} =useParams()
     const [post, setPost] = useState(null)
     const [loading, setLoading] = useState(true)
+
+    const {user} = useContext(UserDataContext)
+    const navigate = useNavigate()
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -24,6 +28,26 @@ const PageView = () => {
         fetchPost();
     }, [id])
 
+    const handleDelete = async() => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this blog?");
+        if(!confirmDelete) return;
+        try{
+            const token = localStorage.getItem('token');
+            const response = await axios.delete(`/posts/delete/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            if(response.status === 200){
+                alert("Blog Deleted Successfully");
+                navigate('/home')
+            }
+        }catch(err){
+            console.log("Delete Error:", err);
+            alert("Failed to delete the blog")
+        }
+    }
+
     if(loading) return (
         <div className="flex justify-center items-center min-h-screen text-lg font-semibold text-gray-500">
             Loading blog...
@@ -34,11 +58,28 @@ const PageView = () => {
             Blog not found
         </div>
     )
-
+    // const isAuthor = user?._id === post?.author?._id;
+    const isAuthor = user && post && user._id.toString() === post.author._id.toString();
+    console.log("Logged In User ID:", user?._id);
+    console.log("Post Author ID:", post?.author?._id);
+    console.log("Is Author match?", isAuthor);
   return (
     <div className='min-h-screen bg-gray-50 pb-10'>
-        <nav className='p-5 max-w-4xl mx-auto'>
+        <nav className='p-5 max-w-4xl mx-auto flex justify-between items-center'>
             <Link to='/home' className='flex items-center gap-2 text-gray-600 hover:text-black transition'>Back to home</Link>
+            {/* Btn */}
+            {isAuthor && (
+                <div className='flex gap-3'>
+                    <Link to={`/edit/${post._id}`}
+                    className='px-4 py-2 bg-gray-200 text-gray-800 rounded-md text-sm font-medium hover:bg-gray-300 transition'>
+                    Edit
+                    </Link>
+                    <button
+                    onClick={handleDelete}
+                    className='px-4 py-2 bg-black text-white rounded-md text-sm font-medium hover:bg-gray-900 transition'
+                    >Delete</button>
+                </div>
+            )}
         </nav>
         <article className='max-w-4xl mx-auto bg-white rounded-xl shadow-sm overflow-hidden'>
             <div className="h-[400px] w-full relative">
