@@ -111,7 +111,7 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {posts.length > 0 ? (
               posts.map((post) => (
-                <div
+                <Link to={`/post/${post._id}`}
                   key={post._id}
                   className="group cursor-pointer flex flex-col gap-3"
                 >
@@ -144,7 +144,7 @@ const Home = () => {
                       </div>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))
             ) : (
               <p>Not posts Found</p>

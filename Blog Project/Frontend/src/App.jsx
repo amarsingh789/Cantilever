@@ -7,6 +7,7 @@ import { UserDataContext } from './context/UserContext'
 import UserProtectWrapper from './Pages/UserProtectWrapper'
 import { UserLogout } from './Pages/UserLogout'
 import CreatePost from './Pages/CreatePost'
+import PageView from './Pages/PageView'
 
 const App = () => {
 
@@ -34,6 +35,11 @@ const App = () => {
             <CreatePost/>
           </UserProtectWrapper>
           }/>
+          <Route path='/post/:id' element={
+            <UserProtectWrapper>
+              <PageView/>
+            </UserProtectWrapper>
+            } />
       </Routes>
     </div>
   )

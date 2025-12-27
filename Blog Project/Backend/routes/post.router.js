@@ -20,4 +20,5 @@ const upload = multer({storage: storage});
 
 router.post('/create', authMiddleware.authUser, upload.single('coverImage'), postControllers.createPost);
 router.get('/all', postControllers.getAllPosts);
+router.get('/get/:id', postControllers.getPostById)
 module.exports = router;

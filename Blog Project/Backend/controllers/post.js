@@ -33,3 +33,17 @@ module.exports.getAllPosts = async(req, res, next) => {
         res.status(500).json({message: err.message});
     }
 }
+
+module.exports.getPostById = async(req, res, next) => {
+    try{
+        const postId = req.params.id;
+        const post = await postModel.findById(postId).populate('author', 'fullname email');
+
+        if(!post){
+            return res.status(404).json({message: 'Post not found'});
+        }
+        res.status(200).json({post});
+    }catch(err){
+        res.status(500).json({message: err.message})
+    }
+}
