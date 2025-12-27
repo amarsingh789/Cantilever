@@ -6,6 +6,7 @@ import UserSignup from './Pages/UserSignup'
 import { UserDataContext } from './context/UserContext'
 import UserProtectWrapper from './Pages/UserProtectWrapper'
 import { UserLogout } from './Pages/UserLogout'
+import CreatePost from './Pages/CreatePost'
 
 const App = () => {
 
@@ -28,6 +29,11 @@ const App = () => {
             <UserLogout/>
           </UserProtectWrapper>
         }/>
+        <Route path='/createpost' element={
+          <UserProtectWrapper>
+            <CreatePost/>
+          </UserProtectWrapper>
+          }/>
       </Routes>
     </div>
   )
