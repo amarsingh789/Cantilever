@@ -493,3 +493,352 @@ Content-Type: application/json
 - Posts are populated with author details (firstname, lastname, email only).
 - Posts are sorted by `createdAt` in descending order (newest first).
 - Author password is never included in the response (schema uses `select: false`).
+
+---
+
+**Get Post by ID Endpoint**
+
+**Endpoint:** `GET /posts/get/:id`
+
+**Description:**
+Retrieves a single blog post by its ID. Includes populated author information. No authentication required.
+
+**Headers:**
+- `Content-Type: application/json`
+
+**URL Parameters:**
+- `id` (string, required) — The MongoDB ObjectId of the post to retrieve.
+
+**Request Body:**
+None
+
+**Successful Response (200 OK):**
+- Description: Returns the requested post with author details.
+- Body example:
+```json
+{
+  "post": {
+    "_id": "64a1f2e5b7c8d9e0f1234567",
+    "title": "Getting Started with Node.js",
+    "content": "Node.js is a JavaScript runtime...",
+    "coverImage": "http://localhost:4000/uploads/image.jpg-1735203600000-123456789.jpg",
+    "category": "Technology",
+    "author": {
+      "_id": "64a1f2e5b7c8d9e0f1234560",
+      "fullname": {
+        "firstname": "John",
+        "lastname": "Doe"
+      },
+      "email": "john@example.com"
+    },
+    "createdAt": "2025-12-26T10:00:00.000Z"
+  }
+}
+```
+
+**Example — Raw HTTP Response (200 OK):**
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "post": {
+    "_id": "64a1f2e5b7c8d9e0f1234567",
+    "title": "Getting Started with Node.js",
+    "content": "Node.js is a JavaScript runtime...",
+    "coverImage": "http://localhost:4000/uploads/image.jpg-1735203600000-123456789.jpg",
+    "category": "Technology",
+    "author": {
+      "_id": "64a1f2e5b7c8d9e0f1234560",
+      "fullname": { "firstname": "John", "lastname": "Doe" },
+      "email": "john@example.com"
+    },
+    "createdAt": "2025-12-26T10:00:00.000Z"
+  }
+}
+```
+
+**Post Not Found (404 Not Found):**
+- Returned when the post with the given ID does not exist.
+- Body example:
+```json
+{ "message": "Post not found" }
+```
+
+**Server Error (500 Internal Server Error):**
+- Returned for unexpected failures.
+- Body example:
+```json
+{ "message": "Internal Server Error" }
+```
+
+**Notes / Implementation details:**
+- No authentication required; publicly accessible.
+- Post is populated with author details (fullname and email only).
+- Author password is never included in the response (schema uses `select: false`).
+- Returns 404 if post ID does not exist.
+
+---
+
+**Update Post Endpoint**
+
+**Endpoint:** `PUT /posts/update/:id`
+
+**Description:**
+Updates an existing blog post. Only the post author can update their own posts. Title, content, and category can be updated. Cover image can be optionally updated with a new file. Requires authentication.
+
+**Headers:**
+- `Authorization: Bearer <token>` (or token in cookie)
+- `Content-Type: multipart/form-data` (or application/json if no file)
+
+**URL Parameters:**
+- `id` (string, required) — The MongoDB ObjectId of the post to update.
+
+**Request Body (multipart/form-data):**
+```
+title: string (required)
+content: string (required)
+category: string (required, enum: 'Technology', 'Health', 'Lifestyle', 'Education', 'Entertainment', 'Business', 'Travel', 'Food', 'Sports', 'Finance')
+coverImage: file (optional, image file)
+```
+
+**Validation Rules:**
+- `title`: required, string.
+- `content`: required, string.
+- `category`: required, must be one of the predefined categories.
+- `coverImage`: optional, image file; if provided, replaces the current cover image.
+
+**Successful Response (200 OK):**
+- Description: Post updated successfully.
+- Body example:
+```json
+{
+  "message": "Post updated successfully",
+  "post": {
+    "_id": "64a1f2e5b7c8d9e0f1234567",
+    "title": "Advanced Node.js Patterns",
+    "content": "Here are some advanced patterns in Node.js...",
+    "coverImage": "http://localhost:4000/uploads/newimage.jpg-1735289600000-987654321.jpg",
+    "category": "Technology",
+    "author": "64a1f2e5b7c8d9e0f1234560",
+    "createdAt": "2025-12-26T10:00:00.000Z"
+  }
+}
+```
+
+**Example — Raw HTTP Response (200 OK):**
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "message": "Post updated successfully",
+  "post": {
+    "_id": "64a1f2e5b7c8d9e0f1234567",
+    "title": "Advanced Node.js Patterns",
+    "content": "Here are some advanced patterns in Node.js...",
+    "coverImage": "http://localhost:4000/uploads/newimage.jpg-1735289600000-987654321.jpg",
+    "category": "Technology",
+    "author": "64a1f2e5b7c8d9e0f1234560",
+    "createdAt": "2025-12-26T10:00:00.000Z"
+  }
+}
+```
+
+**Post Not Found (404 Not Found):**
+- Returned when the post with the given ID does not exist.
+- Body example:
+```json
+{ "message": "Post not found" }
+```
+
+**Unauthorized / Forbidden (403 Forbidden):**
+- Returned when the authenticated user is not the post author.
+- Body example:
+```json
+{ "message": "Unauthorized action" }
+```
+
+**Unauthorized (401 Unauthorized):**
+- Returned when token is missing, invalid, or expired.
+- Body example:
+```json
+{ "message": "Unauthorized" }
+```
+
+**Server Error (500 Internal Server Error):**
+- Returned for unexpected failures.
+- Body example:
+```json
+{ "message": "Internal Server Error" }
+```
+
+**Notes / Implementation details:**
+- Requires valid JWT token for authentication.
+- Only the post author can update their own posts; other users receive 403 Forbidden.
+- Cover image is optional; if provided, it replaces the current image.
+- Image filename is generated with timestamp and random suffix for uniqueness.
+- The updated post is returned with the new data.
+
+---
+
+**Delete Post Endpoint**
+
+**Endpoint:** `DELETE /posts/delete/:id`
+
+**Description:**
+Deletes a blog post permanently. Only the post author can delete their own posts. Requires authentication.
+
+**Headers:**
+- `Authorization: Bearer <token>` (or token in cookie)
+- `Content-Type: application/json`
+
+**URL Parameters:**
+- `id` (string, required) — The MongoDB ObjectId of the post to delete.
+
+**Request Body:**
+None
+
+**Successful Response (200 OK):**
+- Description: Post deleted successfully.
+- Body example:
+```json
+{ "message": "Post deleted successfully" }
+```
+
+**Example — Raw HTTP Response (200 OK):**
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{ "message": "Post deleted successfully" }
+```
+
+**Post Not Found (404 Not Found):**
+- Returned when the post with the given ID does not exist.
+- Body example:
+```json
+{ "message": "Post not found" }
+```
+
+**Unauthorized / Forbidden (403 Forbidden):**
+- Returned when the authenticated user is not the post author.
+- Body example:
+```json
+{ "message": "Unauthorized action" }
+```
+
+**Unauthorized (401 Unauthorized):**
+- Returned when token is missing, invalid, or expired.
+- Body example:
+```json
+{ "message": "Unauthorized" }
+```
+
+**Server Error (500 Internal Server Error):**
+- Returned for unexpected failures.
+- Body example:
+```json
+{ "message": "Internal Server Error" }
+```
+
+**Notes / Implementation details:**
+- Requires valid JWT token for authentication.
+- Only the post author can delete their own posts; other users receive 403 Forbidden.
+- Once deleted, the post cannot be recovered.
+- The cover image file remains on the server (manual cleanup may be needed).
+
+---
+
+**Get User's Posts Endpoint**
+
+**Endpoint:** `GET /posts/my-posts`
+
+**Description:**
+Retrieves all blog posts created by the authenticated user, sorted by creation date (newest first). Requires authentication.
+
+**Headers:**
+- `Authorization: Bearer <token>` (or token in cookie)
+- `Content-Type: application/json`
+
+**Request Body:**
+None
+
+**Query Parameters:**
+None (currently)
+
+**Successful Response (200 OK):**
+- Description: Returns array of all posts created by the authenticated user.
+- Body example:
+```json
+{
+  "posts": [
+    {
+      "_id": "64a1f2e5b7c8d9e0f1234567",
+      "title": "Getting Started with Node.js",
+      "content": "Node.js is a JavaScript runtime...",
+      "coverImage": "http://localhost:4000/uploads/image.jpg-1735203600000-123456789.jpg",
+      "category": "Technology",
+      "author": "64a1f2e5b7c8d9e0f1234560",
+      "createdAt": "2025-12-26T10:00:00.000Z"
+    },
+    {
+      "_id": "64a1f2e5b7c8d9e0f1234568",
+      "title": "Advanced Node.js Patterns",
+      "content": "Here are some advanced patterns...",
+      "coverImage": "http://localhost:4000/uploads/advanced.jpg-1735289600000-987654321.jpg",
+      "category": "Technology",
+      "author": "64a1f2e5b7c8d9e0f1234560",
+      "createdAt": "2025-12-27T10:00:00.000Z"
+    }
+  ]
+}
+```
+
+**Example — Raw HTTP Response (200 OK):**
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "posts": [
+    {
+      "_id": "64a1f2e5b7c8d9e0f1234567",
+      "title": "Getting Started with Node.js",
+      "content": "Node.js is a JavaScript runtime...",
+      "coverImage": "http://localhost:4000/uploads/image.jpg-1735203600000-123456789.jpg",
+      "category": "Technology",
+      "author": "64a1f2e5b7c8d9e0f1234560",
+      "createdAt": "2025-12-26T10:00:00.000Z"
+    }
+  ]
+}
+```
+
+**Empty Array Response (200 OK):**
+- Returned when the authenticated user has not created any posts yet.
+- Body example:
+```json
+{ "posts": [] }
+```
+
+**Unauthorized (401 Unauthorized):**
+- Returned when token is missing, invalid, or expired.
+- Body example:
+```json
+{ "message": "Unauthorized" }
+```
+
+**Server Error (500 Internal Server Error):**
+- Returned for unexpected failures.
+- Body example:
+```json
+{ "message": "Internal Server Error" }
+```
+
+**Notes / Implementation details:**
+- Requires valid JWT token for authentication.
+- Returns only posts where the `author` field matches the authenticated user's ID.
+- Posts are sorted by `createdAt` in descending order (newest first).
+- If the user has no posts, an empty array is returned with 200 OK status.
+- Author details are not populated in the response (only author ID is included).

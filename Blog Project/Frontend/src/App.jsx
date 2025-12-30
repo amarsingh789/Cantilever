@@ -9,6 +9,7 @@ import { UserLogout } from './Pages/UserLogout'
 import CreatePost from './Pages/CreatePost'
 import PageView from './Pages/PageView'
 import EditPage from './Pages/EditPost'
+import Profile from './Pages/Profile'
 
 const App = () => {
 
@@ -46,6 +47,11 @@ const App = () => {
               <EditPage/>
             </UserProtectWrapper>
           }/>  
+          <Route path='/profile' element={
+            <UserProtectWrapper>
+              <Profile/>
+            </UserProtectWrapper>
+            } />
       </Routes>
     </div>
   )

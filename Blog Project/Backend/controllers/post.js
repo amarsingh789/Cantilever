@@ -94,3 +94,15 @@ module.exports.deletePost = async(req, res, next) => {
         res.status(500).json({message: err.message})
     }
 }
+
+// Get User's posts
+module.exports.getUserPosts = async(req, res, next) => {
+    try{
+        const userId = req.user._id;
+        console.log(userId);
+        const posts = await postModel.find({author: userId}).sort({createdAt: -1});
+        res.status(200).json({posts})
+    }catch(err){
+        res.status(500).json({message: err.message})
+    }
+}

@@ -23,4 +23,5 @@ router.get('/all', postControllers.getAllPosts);
 router.get('/get/:id', postControllers.getPostById);
 router.put('/update/:id', authMiddleware.authUser, upload.single('coverImage'), postControllers.updatePost);
 router.delete('/delete/:id', authMiddleware.authUser, postControllers.deletePost)
+router.get('/my-posts', authMiddleware.authUser, postControllers.getUserPosts)
 module.exports = router;
