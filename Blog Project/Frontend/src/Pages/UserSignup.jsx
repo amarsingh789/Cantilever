@@ -11,6 +11,7 @@ const UserSignUp = () => {
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [userData, setUserData] = useState({})
+  const [error, setError] = useState('')
 
   const navigate = useNavigate()
 
@@ -18,15 +19,12 @@ const UserSignUp = () => {
 
   const submitHandler =async (e)=>{
     e.preventDefault()
-    // setUserData({
-    //   fullName:{
-    //     firstName: firstName,
-    //     lastName: lastName,
-    //   },
-    //   email: email,
-    //   password: password
-    // })
-    // console.log(userData);
+    setError('');
+
+    if(password.length < 6 ){
+      setError('Password must be at least 6 characters long');
+      return;
+    }
     const newUser = {
       fullname:{
         firstname: firstName,
@@ -35,7 +33,8 @@ const UserSignUp = () => {
       email: email,
       password: password
     }
-    const response = await axios.post('/users/register', newUser)
+    try{
+      const response = await axios.post('/users/register', newUser)
 
     if(response.status === 201){
       const data = response.data
@@ -44,17 +43,38 @@ const UserSignUp = () => {
       localStorage.setItem('token', data.token)
       navigate('/home')
       
-    }
-    setEmail('')
+      setEmail('')
     setFirstName('')
     setLastName('')
     setPassword('')
+    }
+    }catch(err){
+      // Handle error from the server
+      if(err.response && err.response.data && err.response.data.message){
+        setError(err.response.data.message)
+      }else if(err.response && err.response.data && err.response.data.errors){
+        // if express-validator return array of errors
+        const firstError = err.response.data.errors[0].msg;
+        setError(firstError)
+      }else{
+        // generic fallback error
+        setError('Something went wrong.Please try again.')
+      }
+      console.error('Signup Error:', err);
+      
+    }
   }
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gray-50 px-4">
       <div className="w-full sm:max-w-sm md:max-w-md lg:max-w-md bg-white px-6 py-8  sm:px-8 rounded-xl shadow-lg">
         <h2 className="text-3xl font-semibold text-center mb-8">MindStream</h2>
+        {/* Error message */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded text-sm text-center">
+            {error}
+          </div>
+        )}
         <form
           action=""
           onSubmit={(e) => {
@@ -73,7 +93,8 @@ const UserSignUp = () => {
                 placeholder="First name"
                 value={firstName}
                 onChange={(e)=>{
-                  setFirstName(e.target.value)
+                  setFirstName(e.target.value);
+                  setError('')
                 }}
               />
               <input
@@ -84,6 +105,7 @@ const UserSignUp = () => {
                 value={lastName}
                 onChange={(e)=>{
                   setLastName(e.target.value)
+                  setError('')
                 }}
               />
             </div>
@@ -99,7 +121,8 @@ const UserSignUp = () => {
               placeholder="Email@example.com"
               value={email}
                 onChange={(e)=>{
-                  setEmail(e.target.value)
+                  setEmail(e.target.value);
+                  setError('')
                 }}
             />
           </div>
@@ -114,7 +137,8 @@ const UserSignUp = () => {
               placeholder="Password"
               value={password}
                 onChange={(e)=>{
-                  setPassword(e.target.value)
+                  setPassword(e.target.value);
+                  setError('')
                 }}
             />
           </div>

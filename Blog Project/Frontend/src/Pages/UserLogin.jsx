@@ -9,6 +9,7 @@ const UserLogin = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [userData, setUserData] = useState({})
+  const [error, setError] = useState('')
 
   const {user, setUser} = useContext(UserDataContext)
 const navigate = useNavigate()
@@ -16,6 +17,7 @@ const navigate = useNavigate()
 
   const submitHandler =async (e)=>{
     e.preventDefault();
+    setError('')
     // console.log(email, password);
     // setUserData({
     //   email: email,
@@ -26,16 +28,30 @@ const navigate = useNavigate()
       email: email,
       password: password
     }
-    const response = await axios.post('/users/login', userData)
+    try{
+      const response = await axios.post('/users/login', userData)
 
     if(response.status === 200){
       const data = response.data
       setUser(data.user)
       localStorage.setItem("token", data.token)
       navigate('/home')
-    }
-    setEmail('')
+
+      setEmail('')
     setPassword('')
+    }
+    }catch(err){
+      if(err.response && err.response.data && err.response.data.message){
+        setError(err.response.data.message)
+      }else if(err.response & err.response.data && err.response.data.errors){
+        const firstError = err.response.data.errors[0].msg;
+        setError(firstError);
+      }else{
+        setError('Login failed. Please check your credentials');
+      }
+      console.error('Login Error:', err);
+      
+    }
     
   }
 
@@ -45,6 +61,12 @@ const navigate = useNavigate()
         <h2 className="text-3xl font-semibold text-center mb-8">
           MindStream
         </h2>
+        {/* Error message */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded text-sm text-center">
+            {error}
+          </div>
+        )}
         <form action="" onSubmit={(e)=>{
           submitHandler(e)
         }}>
@@ -57,6 +79,7 @@ const navigate = useNavigate()
             value={email}
             onChange={(e)=>{
               setEmail(e.target.value);
+              setError('')
               
             }}
             placeholder="Email@example.com"
@@ -71,7 +94,7 @@ const navigate = useNavigate()
             value={password}
             onChange={(e)=>{
               setPassword(e.target.value);
-              
+              setError('')
             }}
             placeholder="Password"
           />
