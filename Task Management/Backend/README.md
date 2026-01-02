@@ -111,9 +111,127 @@ The following validation errors may be returned:
 
 ---
 
+## User Login Endpoint
+
+### `/users/login`
+
+#### Description
+This endpoint allows registered users to log in to their account. It validates the email and password, verifies the credentials against the database, and returns an authentication token.
+
+#### HTTP Method
+```
+POST
+```
+
+#### Endpoint URL
+```
+POST /users/login
+```
+
+---
+
+## Request
+
+### Request Body
+The request must be sent as JSON with the following fields:
+
+| Field | Type | Required | Validation Rules |
+|-------|------|----------|------------------|
+| `email` | String | Yes | Must be a valid email format |
+| `password` | String | Yes | Minimum 6 characters |
+
+### Example Request
+```json
+{
+  "email": "user@example.com",
+  "password": "securePassword123"
+}
+```
+
+---
+
+## Response
+
+### Success Response
+
+**Status Code:** `200 OK`
+
+**Response Body:**
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "_id": "507f1f77bcf86cd799439011",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "user@example.com"
+  }
+}
+```
+
+### Error Response - Invalid Credentials
+
+**Status Code:** `401 Unauthorized`
+
+**Response Body:**
+```json
+{
+  "message": "Invalid email or password"
+}
+```
+
+### Error Response - Validation Failed
+
+**Status Code:** `400 Bad Request`
+
+**Response Body:**
+```json
+{
+  "errors": [
+    {
+      "value": "invalidemail",
+      "msg": "Invalid Email",
+      "param": "email",
+      "location": "body"
+    },
+    {
+      "value": "12345",
+      "msg": "Password must be at least 6 characters long",
+      "param": "password",
+      "location": "body"
+    }
+  ]
+}
+```
+
+---
+
+## Status Codes
+
+| Status Code | Description |
+|-------------|-------------|
+| `200 OK` | User successfully authenticated. Token and user details returned. |
+| `400 Bad Request` | Validation failed. Check the error messages in the response for details. |
+| `401 Unauthorized` | Invalid email or password. User credentials do not match. |
+
+---
+
+## Validation Errors
+
+The following validation errors may be returned:
+
+- **Invalid Email**: The email field must be a valid email format
+- **Password must be at least 6 characters long**: The password field must contain at least 6 characters
+
+---
+
 ## Notes
 
 - The password is hashed using bcrypt before being stored in the database
 - The returned token can be used for authenticated requests
 - User IDs are generated as MongoDB ObjectIds
 - Email addresses must be unique (duplicate emails will be rejected)
+- Password comparison uses bcrypt to securely verify the provided password against the stored hash
+- Both email and password are required for successful login
