@@ -1,0 +1,119 @@
+# Task Management Backend API Documentation
+
+## User Registration Endpoint
+
+### `/users/register`
+
+#### Description
+This endpoint allows users to create a new account in the system. It validates the input data, hashes the password, creates a new user record in the database, and returns an authentication token.
+
+#### HTTP Method
+```
+POST
+```
+
+#### Endpoint URL
+```
+POST /users/register
+```
+
+---
+
+## Request
+
+### Request Body
+The request must be sent as JSON with the following fields:
+
+| Field | Type | Required | Validation Rules |
+|-------|------|----------|------------------|
+| `email` | String | Yes | Must be a valid email format |
+| `fullname.firstname` | String | Yes | Minimum 3 characters |
+| `fullname.lastname` | String | No | Minimum 3 characters (if provided) |
+| `password` | String | Yes | Minimum 6 characters |
+
+### Example Request
+```json
+{
+  "email": "user@example.com",
+  "fullname": {
+    "firstname": "John",
+    "lastname": "Doe"
+  },
+  "password": "securePassword123"
+}
+```
+
+---
+
+## Response
+
+### Success Response
+
+**Status Code:** `201 Created`
+
+**Response Body:**
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "_id": "507f1f77bcf86cd799439011",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "user@example.com"
+  }
+}
+```
+
+### Error Response - Validation Failed
+
+**Status Code:** `400 Bad Request`
+
+**Response Body:**
+```json
+{
+  "errors": [
+    {
+      "value": "invalidemail",
+      "msg": "Invalid Email",
+      "param": "email",
+      "location": "body"
+    },
+    {
+      "value": "ab",
+      "msg": "First name must be at least 3 characters long",
+      "param": "fullname.firstname",
+      "location": "body"
+    }
+  ]
+}
+```
+
+---
+
+## Status Codes
+
+| Status Code | Description |
+|-------------|-------------|
+| `201 Created` | User successfully registered. Token and user details returned. |
+| `400 Bad Request` | Validation failed. Check the error messages in the response for details. |
+
+---
+
+## Validation Errors
+
+The following validation errors may be returned:
+
+- **Invalid Email**: The email field must be a valid email format
+- **First name must be at least 3 characters long**: The firstname field must contain at least 3 characters
+- **Password must be at least 6 characters long**: The password field must contain at least 6 characters
+
+---
+
+## Notes
+
+- The password is hashed using bcrypt before being stored in the database
+- The returned token can be used for authenticated requests
+- User IDs are generated as MongoDB ObjectIds
+- Email addresses must be unique (duplicate emails will be rejected)
