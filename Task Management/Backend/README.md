@@ -235,3 +235,150 @@ The following validation errors may be returned:
 - Email addresses must be unique (duplicate emails will be rejected)
 - Password comparison uses bcrypt to securely verify the provided password against the stored hash
 - Both email and password are required for successful login
+
+---
+
+## User Profile Endpoint
+
+### `/users/profile`
+
+#### Description
+This endpoint retrieves the profile information of the currently authenticated user. It requires a valid authentication token to access.
+
+#### HTTP Method
+```
+GET
+```
+
+#### Endpoint URL
+```
+GET /users/profile
+```
+
+#### Authentication
+**Required:** Yes - Must include a valid authentication token in the request header or cookies.
+
+---
+
+## Request
+
+### Headers
+| Header | Value | Required |
+|--------|-------|----------|
+| `Authorization` | `Bearer <token>` | Yes (or via cookie) |
+| `Cookie` | `token=<token>` | Yes (if not using Authorization header) |
+
+### Example Request
+```
+GET /users/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+---
+
+## Response
+
+### Success Response
+
+**Status Code:** `200 OK`
+
+**Response Body:**
+```json
+{
+  "_id": "507f1f77bcf86cd799439011",
+  "fullname": {
+    "firstname": "John",
+    "lastname": "Doe"
+  },
+  "email": "user@example.com"
+}
+```
+
+---
+
+## Status Codes
+
+| Status Code | Description |
+|-------------|-------------|
+| `200 OK` | User profile successfully retrieved. |
+| `401 Unauthorized` | Invalid or missing authentication token. |
+
+---
+
+## Notes
+
+- This endpoint requires valid authentication
+- The token can be obtained from the `/users/register` or `/users/login` endpoints
+- User must be logged in to access their profile
+
+---
+
+## User Logout Endpoint
+
+### `/users/logout`
+
+#### Description
+This endpoint logs out the currently authenticated user. It clears the authentication token from cookies and adds it to a blacklist to prevent further use.
+
+#### HTTP Method
+```
+GET
+```
+
+#### Endpoint URL
+```
+GET /users/logout
+```
+
+#### Authentication
+**Required:** Yes - Must include a valid authentication token in the request header or cookies.
+
+---
+
+## Request
+
+### Headers
+| Header | Value | Required |
+|--------|-------|----------|
+| `Authorization` | `Bearer <token>` | Yes (or via cookie) |
+| `Cookie` | `token=<token>` | Yes (if not using Authorization header) |
+
+### Example Request
+```
+GET /users/logout
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+---
+
+## Response
+
+### Success Response
+
+**Status Code:** `200 OK`
+
+**Response Body:**
+```json
+{
+  "message": "Logged out"
+}
+```
+
+---
+
+## Status Codes
+
+| Status Code | Description |
+|-------------|-------------|
+| `200 OK` | User successfully logged out. Token has been blacklisted. |
+| `401 Unauthorized` | Invalid or missing authentication token. |
+
+---
+
+## Notes
+
+- This endpoint requires valid authentication
+- The authentication token is cleared from cookies after logout
+- The token is added to a blacklist to prevent reuse
+- The user will need to log in again to obtain a new token
+- All subsequent requests using the blacklisted token will be rejected
