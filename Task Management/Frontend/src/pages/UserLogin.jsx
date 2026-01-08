@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useContext, useState } from "react"
 import { Button } from "../components/ui/button"
 import { Eye, EyeOff, Loader2, Mail } from "lucide-react"
 import {
@@ -12,7 +12,10 @@ import {
 import { Rocket } from "lucide-react"
 import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import axios from "axios"
+import {UserDataContext} from "../context/UserContext"
+import { json } from "zod"
 
 const UserLogin = () => {
   const [email, setEmail] = useState("")
@@ -20,12 +23,28 @@ const UserLogin = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const submitHandler = (e) => {
+  const {user, setUser} =  useContext(UserDataContext)
+  const navigate = useNavigate()
+
+  const submitHandler = async(e) => {
     e.preventDefault()
+    const userData = {
+      email: email,
+      password: password
+    }
+
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/login`, userData)
+
+    if(response.status === 200){
+      const data = response.data
+      setUser(data.user)
+      localStorage.setItem('token', data.token)
+      navigate('/home')
+    }
+
     setLoading(true)
 
     setTimeout(() => {
-      console.log({ email, password })
       setLoading(false)
     }, 1500)
     setEmail('')

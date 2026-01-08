@@ -19,7 +19,7 @@ const Home = () => {
   ];
   return (
     <div>
-      <navbar>
+      <nav>
         <div className="flex items-center justify-between px-6 py-5 bg-black text-white">
           <div className="text-2xl font-semibold text-white">
             <a href="">TaskPilot</a>
@@ -54,7 +54,7 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </navbar>
+      </nav>
       <section>
         <div className="px-6 py-2 items-center">
           <div className="box-01 flex justify-between mb-5">

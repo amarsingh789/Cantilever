@@ -6,6 +6,8 @@ import UserSignUp from './pages/UserSignUp'
 import Dashboard from './pages/Dashboard'
 import StartedPage from './pages/StartedPage'
 import { UserDataContext } from './context/UserContext'
+import UserProtectWraper from './pages/UserProtectWraper'
+import UserLogout from './pages/UserLogout'
 
 const App = () => {
   
@@ -14,10 +16,17 @@ const App = () => {
     <div>
       <Routes>
         <Route path='/' element={<StartedPage/>}/>
-        <Route path='/home' element={<Home/>}/>
+        <Route path='/home' element={
+          <UserProtectWraper>
+            <Home/>
+          </UserProtectWraper>
+        }/>
         <Route path='/login' element={<UserLogin/>}/>
         <Route path='/signup' element={<UserSignUp/>}/>
         <Route path='/dash' element={<Dashboard/>}/>
+        <Route path='/user/logout' element={<UserProtectWraper>
+          <UserLogout/>
+        </UserProtectWraper>}/>
       </Routes>
     </div>
   )
