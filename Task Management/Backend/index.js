@@ -8,6 +8,7 @@ const http = require('http')
 const mongoose = require('mongoose');
 const userRoutes = require('./routes/user.routes.js')
 const cookieParser = require('cookie-parser')
+const taskRoutes = require('./routes/task.routes.js')
 
 main()
 .then(() =>{
@@ -29,7 +30,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/users', userRoutes)
-
+app.use('/tasks', taskRoutes)
 app.listen(port, ()=>{
     console.log(`Server are listing on this port ${port}`);
     
