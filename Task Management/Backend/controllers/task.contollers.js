@@ -34,10 +34,10 @@ module.exports.getAllTasks = async(req, res, next) => {
 // UPDATE Task CONTROLLER
 module.exports.updateTask = async(req, res, next)=> {
     try{
-        const {status} = req.body;
+        const {title, description, status, priority} = req.body;
         const task = await taskModel.findOneAndUpdate(
             {_id: req.params.id, user: req.user._id},
-            {status: status},
+            {title, description, status, priority},
             {new: true}
         );
         if(!task){
