@@ -19,7 +19,7 @@ import {
   X
 } from "lucide-react";
 import axios from "axios";
-
+import toast from "react-hot-toast";
 
 
 const EditTask = ({open, setOpen, task, onTaskUpdated}) => {
@@ -50,10 +50,12 @@ const EditTask = ({open, setOpen, task, onTaskUpdated}) => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       if (response.status === 200) {
+        toast.success("Task updated");
         onTaskUpdated();
         setOpen(false);
       }
     } catch (err) {
+        toast.error("Update failed");
       console.error("Failed to updated", err);
     } finally {
       setLoading(false);
@@ -62,13 +64,6 @@ const EditTask = ({open, setOpen, task, onTaskUpdated}) => {
 
   return (
      <Dialog open={open} onOpenChange={setOpen}>
-          {/* <DialogTrigger asChild>
-            <button className="bg-[#6b5fed] px-3 py-2 rounded-lg text-white flex gap-2 items-center hover:bg-[#5a4edc] transition shadow-sm font-medium">
-              <SquarePlus size={20} strokeWidth={1.5} />
-              Add Task
-            </button>
-          </DialogTrigger> */}
-    
           {/* Modal Content - styled like the image */}
           <DialogContent className="sm:max-w-[500px] bg-white p-0 overflow-hidden border-none shadow-2xl rounded-2xl">
             
@@ -158,12 +153,6 @@ const EditTask = ({open, setOpen, task, onTaskUpdated}) => {
                   className="w-full resize-none border-none shadow-none text-slate-600 focus:ring-0 p-0 text-sm placeholder:text-slate-300 focus:outline-none"
                 />
               </div>
-    
-              {/* Add Image Placeholder (Visual Only) */}
-              {/* <div className="border-2 border-dashed border-slate-200 rounded-xl h-32 flex flex-col items-center justify-center gap-2 text-slate-400 hover:bg-slate-50 hover:border-slate-300 transition cursor-pointer">
-                <SquarePlus size={24} className="text-slate-300" />
-                <span className="text-sm font-medium">Add Image</span>
-              </div> */}
     
               {/* Footer Button */}
               <Button

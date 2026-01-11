@@ -8,9 +8,10 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
-import { User, Mail, Lock, Loader2, Rocket } from "lucide-react"
+import { User, Mail, Lock, Loader2, Rocket, AlertCircle } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import axios from "axios"
 import {UserDataContext} from "../context/UserContext"
@@ -22,12 +23,15 @@ const UserSignUp = () => {
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [userData, setUserData] = useState({})
+  const [error, setError] = useState(null)
 
   const navigate = useNavigate()
   const {user, setUser} =  useContext(UserDataContext)
 
   const submitHandler = async(e) => {
     e.preventDefault()
+    setLoading(true)
+    setError('')
     const newUser = {
       fullname:{
         firstname: firstName,
@@ -37,23 +41,45 @@ const UserSignUp = () => {
       password: password
     }
     console.log(newUser);
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, newUser)
+    try{
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, newUser)
     if(response.status === 201){
       const data = response.data
       localStorage.setItem('token', data.token)
       setUser(data.user)
       navigate('/home')
     }
-
-    setLoading(true)
-
-    setTimeout(() => {
-      setLoading(false)
-    }, 1500)
     setEmail('')
     setFirstName('')
     setLastName('')
     setPassword('')
+    }catch(err){
+      if (err.response && err.response.data) {
+        // ✅ Case 1: Express-Validator Errors (Array format: { errors: [{msg: '...'}, {msg: '...'}] })
+        if (err.response.data.errors) {
+          // Hum pehla error dikha sakte hain ya sabko join karke
+          // Option A (Recommended): Show first error
+           setError(err.response.data.errors[0].msg);
+           
+           // Option B: Show all errors
+           // const messages = err.response.data.errors.map(e => e.msg).join(". ");
+           // setError(messages);
+        }
+        // ✅ Case 2: Custom Message (String format: { message: '...' })
+        else if (err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError("Something went wrong. Please try again.");
+        }
+      } else {
+        setError("Network Error. Please check your connection.");
+      }
+    }finally {
+      setLoading(false);
+    }
+    // setTimeout(() => {
+    //   setLoading(false)
+    // }, 1500)
   }
 
   return (
@@ -81,6 +107,13 @@ const UserSignUp = () => {
 
         {/* Content */}
         <CardContent>
+          {error && (
+            <Alert variant="destructive" className="mb-6 border-red-200 bg-red-50 text-red-800">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
           <form onSubmit={submitHandler} className="space-y-6">
 
             {/* First & Last Name */}

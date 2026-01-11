@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react"
 import { Button } from "../components/ui/button"
-import { Eye, EyeOff, Loader2, Mail } from "lucide-react"
+import { Eye, EyeOff, Loader2, Mail, AlertCircle } from "lucide-react"
 import {
   Card,
   CardContent,
@@ -9,31 +9,35 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card"
+import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
 import { Rocket } from "lucide-react"
 import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
 import { Link, useNavigate } from "react-router-dom"
 import axios from "axios"
 import {UserDataContext} from "../context/UserContext"
-import { json } from "zod"
 
 const UserLogin = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   const {user, setUser} =  useContext(UserDataContext)
   const navigate = useNavigate()
 
   const submitHandler = async(e) => {
-    e.preventDefault()
+    e.preventDefault();
+    setLoading(true)
+    setError('')
     const userData = {
       email: email,
       password: password
     }
 
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/login`, userData)
+    try{
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/login`, userData)
 
     if(response.status === 200){
       const data = response.data
@@ -41,14 +45,35 @@ const UserLogin = () => {
       localStorage.setItem('token', data.token)
       navigate('/home')
     }
+    // Form fields clear
+      setEmail("");
+      setPassword("")
+    }catch(err){
+      if (err.response && err.response.data) {
+        // ✅ Case 1: Express-Validator Errors (Array)
+        if (err.response.data.errors) {
+          // Join multiple errors into a single string or just take the first one
+          const errorMessages = err.response.data.errors.map(e => e.msg).join(". ");
+          setError(errorMessages);
+        } 
+        // ✅ Case 2: Custom Message (String) like "Invalid email or password"
+        else if (err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError("Login failed. Please check your credentials.");
+        }
+      } else {
+        setError("Network error. Please try again.");
+      }
+    }finally {
+      setLoading(false);
+    }
 
-    setLoading(true)
-
-    setTimeout(() => {
-      setLoading(false)
-    }, 1500)
-    setEmail('')
-    setPassword('')
+    // setTimeout(() => {
+    //   setLoading(false)
+    // }, 1500)
+    // setEmail('')
+    // setPassword('')
   }
 
   return (
@@ -76,6 +101,13 @@ const UserLogin = () => {
 
         {/* Content */}
         <CardContent>
+          {error && (
+            <Alert variant="destructive" className="mb-6 border-red-200 bg-red-50 text-red-800">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
           <form onSubmit={submitHandler} className="space-y-6">
 
             {/* Email */}

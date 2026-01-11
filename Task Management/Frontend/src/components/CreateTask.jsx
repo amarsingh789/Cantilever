@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import toast from 'react-hot-toast';
 import { 
   SquarePlus, 
   Loader2, 
@@ -41,11 +42,13 @@ const CreateTask = ({ onTaskCreated }) => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       if (response.status === 201) {
+        toast.success("Task created successfully!")
         onTaskCreated();
         setOpen(false);
         resetForm();
       }
     } catch (err) {
+      toast.error("Failed to create task");
       console.error("Error creating task", err);
     } finally {
       setLoading(false);
@@ -158,12 +161,6 @@ const CreateTask = ({ onTaskCreated }) => {
               rows={2}
               className="w-full resize-none border-none shadow-none text-slate-600 focus:ring-0 p-0 text-sm placeholder:text-slate-300 focus:outline-none"
             />
-          </div>
-
-          {/* Add Image Placeholder (Visual Only) */}
-          <div className="border-2 border-dashed border-slate-200 rounded-xl h-32 flex flex-col items-center justify-center gap-2 text-slate-400 hover:bg-slate-50 hover:border-slate-300 transition cursor-pointer">
-            <SquarePlus size={24} className="text-slate-300" />
-            <span className="text-sm font-medium">Add Image</span>
           </div>
 
           {/* Footer Button */}
