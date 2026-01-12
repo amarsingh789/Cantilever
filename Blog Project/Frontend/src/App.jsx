@@ -13,9 +13,6 @@ import Profile from './Pages/Profile'
 import NotFound from './componenets/NotFound'
 
 const App = () => {
-
-  // const ans = useContext(UserDataContext)
-  // console.log(ans);
   
   return (
     <div>
