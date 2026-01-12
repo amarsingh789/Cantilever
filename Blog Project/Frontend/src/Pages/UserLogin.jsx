@@ -18,12 +18,6 @@ const navigate = useNavigate()
   const submitHandler =async (e)=>{
     e.preventDefault();
     setError('')
-    // console.log(email, password);
-    // setUserData({
-    //   email: email,
-    //   password: password
-    // })
-    // console.log(userData);
     const userData = {
       email: email,
       password: password

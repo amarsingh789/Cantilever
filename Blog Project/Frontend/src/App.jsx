@@ -10,6 +10,7 @@ import CreatePost from './Pages/CreatePost'
 import PageView from './Pages/PageView'
 import EditPage from './Pages/EditPost'
 import Profile from './Pages/Profile'
+import NotFound from './componenets/NotFound'
 
 const App = () => {
 
@@ -52,6 +53,7 @@ const App = () => {
               <Profile/>
             </UserProtectWrapper>
             } />
+            <Route path='*' element={<NotFound/>}/>
       </Routes>
     </div>
   )

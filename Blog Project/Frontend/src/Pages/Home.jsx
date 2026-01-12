@@ -167,15 +167,6 @@ const Home = () => {
                   </>
                 ) : (
                   <>
-                    {/* <Link
-                    to="/user/logout"
-                    className="px-4 py-2 bg-black text-white rounded-md text-[18px] font-semibold hover:opacity-90 transition"
-                  >
-                    Logout
-                  </Link>
-                  <Link to='/createpost' className="px-4 py-2 bg-white text-black rounded-md text-[18px] font-semibold hover:opacity-90 transition">
-                    Write
-                  </Link> */}
                   <Link to='/createpost' className="hidden md:block px-4 py-2 bg-white text-black rounded-md text-[18px] font-semibold
                    hover:opacity-90 transition">Write</Link>
                    <Link to='/profile' className="flex items-center gap-2 bg-white/20 backdrop-blur-md py-1 px-2 pr-4 rounded-full hover:bg-white/30 transition text-white border border-white/20">
@@ -194,18 +185,6 @@ const Home = () => {
                 )}
               </div>
             </div>
-            {/* hero section */}
-            {/* <section className="flex-1 flex items-end px-6 pb-10 md:px-12 lg:px-20">
-              <div className="max-w-xl text-white">
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-4">
-                  Exploring the Wonders of Hiking
-                </h1>
-                <p className="text-white/80 text-sm md:text-base">
-                  An iconic landmarks, this post unveils the secrets that make
-                  this destination a traveler's paradise.
-                </p>
-              </div>
-            </section> */}
           </div>
         </div>
       {/* </div> */}

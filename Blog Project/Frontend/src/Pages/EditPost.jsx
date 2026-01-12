@@ -49,7 +49,6 @@ const EditPage = () => {
   }, [id]);
   const handleSumbit = async (e) => {
     e.preventDefault();
-    console.log("Update Button Clicked!")
     // image upload logic
     const formData = new FormData();
     formData.append("title", title);
@@ -64,7 +63,6 @@ const EditPage = () => {
         }
     try {
       const token = localStorage.getItem("token");
-      console.log("Sending Request to Backend...");
       const response = await axios.put(`/posts/update/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
