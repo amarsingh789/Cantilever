@@ -10,6 +10,8 @@ const userRoutes = require('./routes/user.routes.js')
 const cookieParser = require('cookie-parser')
 const taskRoutes = require('./routes/task.routes.js')
 
+const dbUrl = process.env.ATLASDB_URL
+
 main()
 .then(() =>{
     console.log("Connected to Database");
@@ -18,7 +20,7 @@ main()
     console.log(err)
 });
 async function main() {
-    await mongoose.connect('mongodb://127.0.0.1:27017/TaskPilot')
+    await mongoose.connect(dbUrl)
 }
 app.use(cors())
 app.use(express.json())
