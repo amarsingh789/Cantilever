@@ -13,6 +13,8 @@ const http = require('http')
 const userRoutes = require('./routes/user.js')
 const cookieParser = require('cookie-parser')
 const postRoutes = require('./routes/post.router.js')
+const fs = require('fs')
+
 
 // const MONGO_URL ='mongodb://127.0.0.1:27017/MindStream'
 const dbUrl = process.env.ATLASDB_URL
@@ -26,6 +28,13 @@ main()
 });
 async function main() {
     await mongoose.connect(dbUrl)
+}
+
+const uploadDir = path.join(__dirname, "uploads");
+if(!fs.existsSync(uploadDir)){
+    fs.mkdirSync(uploadDir)
+    console.log("Created uploads folder sucessfully");
+    
 }
 
 app.use(cors());
