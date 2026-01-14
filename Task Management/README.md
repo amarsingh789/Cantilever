@@ -3,7 +3,7 @@
 <div align="center">
 
   <h3>
-    🚀 <a href="https://your-taskpilot-link.netlify.app">View Live Demo</a> 🚀
+    🚀 <a href="https://taskpilot-bice.vercel.app/">View Live Demo</a> 🚀
   </h3>
 
   <p>
@@ -220,14 +220,14 @@ This project is configured for cloud deployment.
 - Add Environment Variables in Render Dashboard:
 - MONGODB_URI, JWT_SECRET, CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET.
 
-**Frontend (Netlify)**
+**Frontend (Vercel)**
 
-- Create a New Site from Git on Netlify.
+- Create a New Site from Git on Vercel.
 - Set Base directory to Frontend.
 - Set Build command to npm run build.
 - Set Publish directory to dist.
 - Add Environment Variable:
-- VITE_BASE_URL = https://TaskPilot-asa7.onrender.com/
+- VITE_BASE_URL = https://taskpilot-sp97.onrender.com/
 
 ## 🔗 API Endpoints
 **Auth Routes**

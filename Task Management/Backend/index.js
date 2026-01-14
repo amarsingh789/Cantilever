@@ -27,7 +27,7 @@ app.use(cors({
         "http://localhost:5173",
         "https://taskpilot-bice.vercel.app"
     ],
-    credentials: true
+    credentials: true   
 }))
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
