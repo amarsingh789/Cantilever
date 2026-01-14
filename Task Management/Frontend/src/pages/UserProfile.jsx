@@ -22,6 +22,7 @@ const UserProfile = () => {
     completed: 0,
     inProgress: 0,
   });
+
   const fetchProfile = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -39,7 +40,8 @@ const UserProfile = () => {
       console.error("Failed to load profile", err);
     }
   };
-  //   Fetch States
+
+  // Fetch Stats
   const fetchStats = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -57,6 +59,7 @@ const UserProfile = () => {
       console.error(err);
     }
   };
+
   useEffect(() => {
     fetchProfile();
     fetchStats();
@@ -83,13 +86,15 @@ const UserProfile = () => {
       console.error("Logout failed:", error);
     }
   };
+
   if (!user) {
     return <p className="p-6">Loading profile...</p>;
   }
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
-      <div className="flex-grow p-6">
-        <div className="max-w-4xl mx-auto ">
+      <div className="flex-grow p-4 md:p-6">
+        <div className="max-w-4xl mx-auto">
           {/* BACK BUTTON */}
           <div className="mb-4">
             <Button
@@ -102,21 +107,26 @@ const UserProfile = () => {
             </Button>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm border p-6">
+          {/* Profile Card */}
+          <div className="bg-white rounded-2xl shadow-sm border p-4 md:p-6">
+            
             {/* ===== HEADER ===== */}
-            <div className="flex items-center gap-6">
-              <Avatar className="h-24 w-24 ring-4 ring-indigo-200">
+            <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+              
+              {/* Avatar */}
+              <Avatar className="h-24 w-24 ring-4 ring-indigo-200 shrink-0">
                 <AvatarImage src={user.avatar || "https://i.pravatar.cc/150"} />
                 <AvatarFallback>
                   {user.fullname?.firstname?.charAt(0)}
                 </AvatarFallback>
               </Avatar>
 
-              <div className="flex-1">
+              {/* User Info */}
+              <div className="flex-1 w-full md:w-auto">
                 <h2 className="text-2xl font-bold text-slate-800">
                   {user.fullname?.firstname} {user.fullname?.lastname}
                 </h2>
-                <p className="flex items-center gap-2 text-slate-500 mt-1">
+                <p className="flex items-center justify-center md:justify-start gap-2 text-slate-500 mt-1">
                   <Mail size={16} /> {user.email}
                 </p>
                 <p className="text-sm text-slate-400 mt-1">
@@ -124,13 +134,16 @@ const UserProfile = () => {
                 </p>
               </div>
 
-              <Button variant="destructive" onClick={handleLogout}>
+              <Button 
+                variant="destructive" 
+                onClick={handleLogout}
+                className="w-full md:w-auto mt-4 md:mt-0"
+              >
                 <LogOut size={16} className="mr-2" />
                 Logout
               </Button>
             </div>
 
-            {/* ===== STATS ===== */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
               <StatCard
                 icon={<User className="text-indigo-500" />}
@@ -149,12 +162,22 @@ const UserProfile = () => {
               />
             </div>
 
-            {/* ===== ACTIONS ===== */}
-            <div className="mt-8 flex gap-4">
-              <Button className="bg-indigo-600 hover:bg-indigo-700">
+            <div className="mt-8 flex flex-col sm:flex-row gap-4">
+              
+              <Button 
+                className="bg-indigo-600 w-full sm:w-auto cursor-not-allowed opacity-50 hover:bg-indigo-600"
+                onClick={(e) => e.preventDefault()} // Click kaam nahi karega
+              >
                 Edit Profile
               </Button>
-              <Button variant="outline">Change Password</Button>
+              
+              <Button 
+                variant="outline" 
+                className="w-full sm:w-auto cursor-not-allowed opacity-50 hover:bg-transparent"
+                onClick={(e) => e.preventDefault()} // Click kaam nahi karega
+              >
+                Change Password
+              </Button>
             </div>
           </div>
         </div>
@@ -163,8 +186,10 @@ const UserProfile = () => {
     </div>
   );
 };
+
+// StatCard Component
 const StatCard = ({ icon, label, value }) => (
-  <div className="bg-slate-50 border rounded-xl p-5 flex items-center gap-4">
+  <div className="bg-slate-50 border rounded-xl p-5 flex items-center gap-4 hover:shadow-md transition-shadow">
     <div className="p-3 bg-white rounded-lg shadow-sm">{icon}</div>
     <div>
       <p className="text-sm text-slate-500">{label}</p>
