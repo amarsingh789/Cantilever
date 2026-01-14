@@ -10,7 +10,7 @@ module.exports.createPost = async(req, res, next) =>{
         if(!req.file){
             return res.status(400).json({message: 'cover image is required'})
         }
-        const coverImage = `http://localhost:4000/uploads/${req.file.filename}`;
+        const coverImage = req.file ? req.file.path : "";
 
         const post = await postModel.create({
             title,
@@ -67,7 +67,7 @@ module.exports.updatePost = async(req, res, next) => {
             category
         };
         if(req.file){
-            updateData.coverImage = `http://localhost:4000/uploads/${req.file.filename}`;
+            updateData.coverImage = req.file.path;
         }
         const updatedPost = await postModel.findByIdAndUpdate(postId, updateData, {new: true});
         res.status(200).json({message: 'Post updated successfully', post: updatedPost})

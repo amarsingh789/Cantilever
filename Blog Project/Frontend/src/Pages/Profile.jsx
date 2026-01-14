@@ -14,7 +14,7 @@ const Profile = () => {
             try{
                 const response = await axiosInstance.get('/posts/my-posts', {
                     headers: {
-                        Authorization: `Bearer ${token}`
+                        // Authorization: `Bearer ${token}`
                     }
                 })
                 setMyPosts(response.data.posts)
