@@ -22,7 +22,13 @@ main()
 async function main() {
     await mongoose.connect(dbUrl)
 }
-app.use(cors())
+app.use(cors({
+    origin: [
+        "http://localhost:5173",
+        "https://taskpilot-bice.vercel.app"
+    ],
+    credentials: true
+}))
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(cookieParser())
