@@ -1,10 +1,10 @@
-import axios from "axios";
 import React, { useContext } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { UserDataContext } from "../context/UserContext";
 import Footer from "../componenets/Footer";
+import axiosInstance from "../utils/axiosInstance";
 
 const PageView = () => {
   const { id } = useParams();
@@ -17,7 +17,7 @@ const PageView = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`/posts/get/${id}`);
+        const response = await axiosInstance.get(`/posts/get/${id}`);
         setPost(response.data.post);
         setLoading(false);
       } catch (err) {
@@ -34,11 +34,11 @@ const PageView = () => {
     );
     if (!confirmDelete) return;
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.delete(`/posts/delete/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      // const token = localStorage.getItem("token");
+      const response = await axiosInstance.delete(`/posts/delete/${id}`, {
+        // headers: {
+        //   Authorization: `Bearer ${token}`,
+        // },
       });
       if (response.status === 200) {
         alert("Blog Deleted Successfully");

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import axios from 'axios'
+import axiosInstance from '../utils/axiosInstance'
 import { useNavigate } from 'react-router-dom'
 
 const CreatePost = () => {
@@ -24,12 +24,11 @@ const CreatePost = () => {
         formData.append('content', content)
 
         try{
-            const token = localStorage.getItem('token')
 
-            const response = await axios.post('/posts/create', formData, {
+            const response = await axiosInstance.post('/posts/create', formData, {
                 headers:{
                     'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${token}`
+                    // Authorization: `Bearer ${token}`
                 }
             })
             if(response.status === 201){

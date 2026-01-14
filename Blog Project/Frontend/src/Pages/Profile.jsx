@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axiosInstance from '../utils/axiosInstance';
 import React, { useContext, useEffect, useState } from 'react'
 import { UserDataContext } from '../context/UserContext'
 import { Link } from 'react-router-dom';
@@ -12,8 +12,7 @@ const Profile = () => {
     useEffect(() => {
         const fetchUserPosts = async () => {
             try{
-                const token = localStorage.getItem('token');
-                const response = await axios.get('/posts/my-posts', {
+                const response = await axiosInstance.get('/posts/my-posts', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

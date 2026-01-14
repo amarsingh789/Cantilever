@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { UserDataContext } from "../context/UserContext";
@@ -6,6 +5,7 @@ import Skeleton from "../componenets/Skeleton";
 import Pagination from '@mui/material/Pagination'
 import Stack from '@mui/material/Stack';
 import {CircleArrowRight} from 'lucide-react'
+import axiosInstance from "../utils/axiosInstance";
 
 
 // Swiper js
@@ -57,7 +57,7 @@ const Home = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get("/posts/all");
+        const response = await axiosInstance.get("/posts/all");
         setPosts(response.data.posts);
         setLoading(false);
       } catch (err) {

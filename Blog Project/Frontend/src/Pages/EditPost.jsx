@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInstance";
 import { useNavigate, useParams } from "react-router-dom";
 
 const EditPage = () => {
@@ -30,8 +30,8 @@ const EditPage = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        console.log("Fetching post data for ID:", id)
-        const response = await axios.get(`/posts/get/${id}`);
+        // console.log("Fetching post data for ID:", id)
+        const response = await axiosInstance.get(`/posts/get/${id}`);
         const post = response.data.post;
 
         setTitle(post.title);
@@ -62,11 +62,10 @@ const EditPage = () => {
             console.log("No new image, keeping old one.");
         }
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.put(`/posts/update/${id}`, formData, {
+      const response = await axiosInstance.put(`/posts/update/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
+          // Authorization: `Bearer ${token}`,
         },
       });
       console.log("Backend Response:", response);
